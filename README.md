@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aguiar Movies
 
-## Getting Started
+Frontend de catálogo de filmes e séries com autenticação, favoritos, watchlist, reviews e fórum — inspirado no design do Netflix/Prime Video.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** com tema dark/light (oklch)
+- **shadcn/ui** + **lucide-react**
+- **Axios** com interceptor JWT (refresh automático)
+- **SweetAlert2** para todos os diálogos
+- **TMDB API** (via proxy no backend Django)
+- **Docker** exposto na porta `2109`
+
+## Funcionalidades
+
+- Autenticação com JWT (access 2h / refresh 7d)
+- Listagem de filmes e séries com scroll infinito e filtro por gênero
+- Busca ao vivo (sem Enter) com debounce de 300ms
+- Favoritos e Watchlist sincronizados com o backend
+- Reviews por conteúdo com avaliação por estrelas
+- Fórum de discussões por filme/série
+- Dark mode / Light mode com persistência em localStorage
+
+## Pré-requisitos
+
+- Node.js 20+
+- Backend Django rodando em `localhost:8000` (ou configurável via `.env.local`)
+
+## Instalação
 
 ```bash
+git clone https://github.com/dfilho13/aguiar-mv-react-web.git
+cd aguiar-mv-react-web
+npm install
+cp .env.example .env.local
+# edite .env.local com suas credenciais
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variáveis de ambiente
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copie `.env.example` para `.env.local` e preencha os valores:
 
-## Learn More
+```bash
+cp .env.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+Veja `.env.example` para a lista completa e descrição de cada variável.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Docker
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+docker compose up --build
+```
 
-## Deploy on Vercel
+A aplicação estará disponível em [http://localhost:2109](http://localhost:2109).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+> As variáveis de ambiente também precisam estar definidas no `docker-compose.yml` ou passadas via `--env-file`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts
+
+| Comando | Descrição |
+|---|---|
+| `npm run dev` | Inicia servidor de desenvolvimento com Turbopack |
+| `npm run build` | Gera build de produção |
+| `npm run start` | Inicia servidor de produção |
+| `npm run lint` | Executa ESLint |
+
+## Estrutura de pastas
+
+```
+app/              → Rotas e páginas (App Router)
+components/ui/    → Componentes shadcn/ui
+domain/           → Enums, tipos e interfaces de domínio
+infra/            → Clientes HTTP (axios), repositórios
+modules/          → Módulos por feature (auth, tmdb, favorites, watchlist, reviews, forum)
+services/         → Camada de serviço (consome repositórios)
+shared/           → Hooks, componentes e utilitários compartilhados
+```
