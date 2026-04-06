@@ -38,21 +38,10 @@ export default function AuthCarousel() {
         />
       ))}
 
-      {/* overlay cinematográfico */}
       <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
 
-      {/* leve escurecimento global */}
       <div className="absolute inset-0 bg-black/30" />
 
-      {/* texto opcional */}
-      <div className="absolute bottom-10 left-10 max-w-md text-white z-10">
-        <h2 className="text-3xl font-semibold leading-tight">
-          Descubra, organize e acompanhe seus filmes
-        </h2>
-        <p className="mt-2 text-sm text-zinc-300">
-          Uma experiência simples e poderosa para cinéfilos
-        </p>
-      </div>
 
     </div>
   );

@@ -19,6 +19,7 @@ import {
   Film,
 } from "lucide-react";
 import { useTheme } from "@/shared/components/ThemeProvider";
+import { NotificationsDropdown } from "@/shared/components/NotificationsDropdown";
 import { authService } from "@/services/auth.service";
 import { swalConfirm } from "@/shared/utils/swal";
 import { cn } from "@/lib/utils";
@@ -173,6 +174,9 @@ export function Navbar() {
             >
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
+
+            {/* Notifications */}
+            <NotificationsDropdown />
 
             {/* Logout */}
             <button
