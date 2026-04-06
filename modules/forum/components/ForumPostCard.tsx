@@ -5,7 +5,8 @@ import Image from "next/image";
 import { Heart, MessageSquare, Trash2, User } from "lucide-react";
 import { ForumPost } from "@/domain/types/forum.types";
 import { buildImageUrl, formatDate } from "@/shared/utils/tmdb.utils";
-import { authService } from "@/services/auth.service";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 import { cn } from "@/lib/utils";
 
 interface ForumPostCardProps {
@@ -15,7 +16,7 @@ interface ForumPostCardProps {
 }
 
 export function ForumPostCard({ post, onLike, onDelete }: ForumPostCardProps) {
-  const currentUser = authService.getUsername();
+  const currentUser = useSelector((state: RootState) => state.auth.user?.username ?? null);
 
   return (
     <article className="bg-card border border-border/60 rounded-xl overflow-hidden hover:border-primary/30 transition-all duration-300 group">

@@ -10,7 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, MessageSquare, ChevronLeft, Trash2, Plus } from "lucide-react";
-import { authService } from "@/services/auth.service";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { swalConfirm } from "@/shared/utils/swal";
 import Link from "next/link";
 
 interface Props {
@@ -26,7 +28,7 @@ export default function ForumPostDetailPage({ params }: Props) {
   const [newComment, setNewComment] = useState("");
   const { comments, loading: commentsLoading, hasMore, loadMore, addComment, deleteComment } =
     useComments(postId);
-  const currentUser = authService.getUsername();
+  const currentUser = useSelector((state: RootState) => state.auth.user?.username ?? null);
 
   useEffect(() => {
     forumService.getPost(postId).then(setPost).finally(() => setLoading(false));
@@ -36,6 +38,15 @@ export default function ForumPostDetailPage({ params }: Props) {
     if (!post) return;
     const { likes_count } = await forumService.likePost(post.id);
     setPost((p) => p ? { ...p, likes_count } : p);
+  }
+
+  async function handleDeletePost() {
+    if (!post) return;
+    const result = await swalConfirm("Excluir post?");
+    if (result.isConfirmed) {
+      await forumService.deletePost(post.id);
+      router.replace("/forum");
+    }
   }
 
   async function handleComment() {
@@ -85,18 +96,29 @@ export default function ForumPostDetailPage({ params }: Props) {
         </p>
 
         {/* Actions */}
-        <div className="flex items-center gap-4 pt-2 border-t border-border/50">
-          <button
-            onClick={handleLike}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-red-400 transition-colors"
-          >
-            <Heart className="w-4 h-4" />
-            {post.likes_count}
-          </button>
-          <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <MessageSquare className="w-4 h-4" />
-            {comments.length}
-          </span>
+        <div className="flex items-center justify-between pt-2 border-t border-border/50">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleLike}
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-red-400 transition-colors"
+            >
+              <Heart className="w-4 h-4" />
+              {post.likes_count}
+            </button>
+            <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+              <MessageSquare className="w-4 h-4" />
+              {comments.length}
+            </span>
+          </div>
+          {currentUser === post.user_username && (
+            <button
+              onClick={handleDeletePost}
+              className="text-muted-foreground hover:text-destructive transition-colors"
+              title="Excluir post"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </article>
 

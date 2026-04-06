@@ -1,5 +1,8 @@
 import { authRepository } from "@/infra/repositories/auth.repository";
 import { LoginPayload, RegisterPayload } from "@/domain/types/auth.types";
+import { decodeJwt } from "@/lib/jwt";
+import { store } from "@/store";
+import { setUser, clearUser } from "@/store/slices/authSlice";
 
 export const authService = {
   async register(payload: RegisterPayload) {
@@ -11,6 +14,11 @@ export const authService = {
     if (typeof window !== "undefined") {
       localStorage.setItem("access_token", tokens.access);
       localStorage.setItem("refresh_token", tokens.refresh);
+
+      const decoded = decodeJwt(tokens.access);
+      if (decoded) {
+        store.dispatch(setUser(decoded));
+      }
     }
     return tokens;
   },
@@ -19,6 +27,8 @@ export const authService = {
     if (typeof window !== "undefined") {
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
+      localStorage.removeItem("username");
+      store.dispatch(clearUser());
     }
   },
 

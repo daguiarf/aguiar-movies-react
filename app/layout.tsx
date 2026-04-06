@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/shared/components/ThemeProvider";
+import { StoreProvider } from "@/shared/components/StoreProvider";
 import "./globals.css";
 import { Metadata } from "next";
 import { Roboto } from "next/font/google";
@@ -34,9 +35,11 @@ export default function RootLayout({
         />
       </head>
       <body className={`${roboto.variable} bg-background text-foreground antialiased`}>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );
